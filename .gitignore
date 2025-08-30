@@ -1,0 +1,51 @@
+# --- Secrets & Keys (CRITICAL) ---
+# Never commit private keys, API keys, or other secrets.
+github_devNetAK
+.env* # Covers .env, .env.local, .env.development, etc.
+keys/
+
+# --- Models & Checkpoints ---
+# Exclude large, downloadable model files.
+models/
+*.bin
+*.ckpt
+*.gguf
+*.pth
+
+# --- Compiled Output & Build Artifacts ---
+# For the llama.cpp project itself.
+llama.cpp/
+build/
+bin/
+*.o
+main
+server
+
+# --- Python ---
+# Ignore common virtual environment names and Python bytecode.
+.venv/
+venv/
+env/
+.venvs/
+__pycache__/
+*.pyc          # Explicitly ignore compiled Python files
+*.pyd          # For Windows dynamic link libraries (Python modules)
+*.pyo          # For optimized bytecode
+
+# --- Logs & Databases ---
+logs/
+*.log          # Catch any .log files outside the logs/ directory
+*.db           # Generic database files (e.g., SQLite)
+
+# --- IDE/Editor ---
+# Ignore editor-specific settings that shouldn't be shared.
+.vscode/
+.idea/
+.project       # Eclipse/other IDE project files
+.DS_Store      # macOS specific file
+Thumbs.db      # Windows specific file
+
+# -- specific test/temp dirs --
+temp/
+real_estate/__pycache__/parse_zillow_page.cpython-313.pyc
+real_estate/__pycache__/parse_zillow_page.cpython-313.pyc
