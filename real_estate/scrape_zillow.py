@@ -57,6 +57,7 @@ def scrape_zillow(zillow_url):
         return None
 
 def main():
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Define the default filename
@@ -74,7 +75,7 @@ def main():
                     help=f'Path to a text file containing Zillow URLs, one per line. Defaults to "{default_file_path}" if not provided.')
     args = parser.parse_args()
     
-    print('Scrape Zillow listing stats')
+    print('Scrape Zillow listings')
 
     try:
         with open(args.url_file, 'r') as f:
@@ -83,7 +84,7 @@ def main():
         print(f"Error: The file {args.url_file} was not found.")
         sys.exit(1)
 
-    print(f"\nListings to scrape from {args.url_file:}")
+    print(f"\nListings to scrape from: {args.url_file:}")
 
     for url in urls:
         content = scrape_zillow(url)
@@ -91,13 +92,13 @@ def main():
         facts = zillow_page.parse_zillow_facts(content)
 
         name = property_manager.get_property_name(url)
-        print(f"\nProperty: {name}")
+        print(f"\n## Property: {name}")
         id = property_manager.get_property_id_from_url(url)
-        print(f"Zillow Property ID: {id}")
+        print(f"## Zillow Property ID: {id}")
 
 
         if stats:
-            print(f"Stats for {url}:")
+            #print(f"Stats for {url}:")
             for key, value in stats.items():
                 print(f"  - {key.replace('_', ' ').capitalize()}: {value}")
         else:

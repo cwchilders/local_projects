@@ -28,39 +28,47 @@ def get_property_id_from_url(url):
     # nope --nada...
     return None
 
+
 def get_property_name(url):
     """
-    Extracts the property name from a Zillow URL.
-    
-    The name is typically the segment between 'homedetails/' and the ZPID.
-    
-    Args:
-        url (str): The full Zillow URL.
-        
-    Returns:
-        str: The extracted property name, with hyphens replaced by spaces.
+    Extracts a human-readable property name from a Zillow URL.
     """
     try:
-        # Find the starting point in the URL
-        start_index = url.find('homedetails/') + len('homedetails/')
-        if start_index < len('homedetails/'):
+        # Regex to capture the address part of the URL
+        # It looks for "homedetails/" followed by a non-greedy match of any characters
+        # up to the next slash. The non-greedy `(.*?)` is key here.
+        match = re.search(r'homedetails/(.*?)/.*_zpid', url)
+        if match:
+            # The address is in the first capture group
+            address_segment = match.group(1)
+            # Replace hyphens with spaces for a cleaner look
+            return address_segment.replace('-', ' ')
+        else:
+            # Fallback for URLs that don't follow the 'homedetails' pattern
+            # This handles cases like `.../address/zpid_...`
+            match = re.search(r'.com/(.*?)/.*_zpid', url)
+            if match:
+                address_segment = match.group(1)
+                return address_segment.replace('-', ' ')
+            
             return "Unknown Property"
-        
-        # Find the end point by looking for the '_zpid' part
-        # This is more reliable as it doesn't rely on the final slash
-        end_index = url.find('_zpid/')
-        if end_index == -1:
-            end_index = url.rfind('/')
 
-        # Extract the segment and replace hyphens with spaces
-        property_segment = url[start_index:end_index]
-        return property_segment.replace('-', ' ')
-        
     except Exception as e:
         print(f"Error extracting property name from URL: {e}")
         return "Unknown Property"
     
-# Example usage:
-# url = "https://www.zillow.com/homedetails/309-Floresta-St-Las-Vegas-NM-87701/123456_zpid/"
-# print(get_property_id_from_url(url))  # Output: 123456
-# print(get_property_name(url)) # Output: "309 Floresta St Las Vegas NM 87701"     
+    return "Unknown Property"
+
+
+# This block ensures the code below only runs if the script is executed directly
+# and not when it's imported as a module.
+if __name__ == "__main__":
+    # Example usage for testing the parsing functions
+    print("This is a test run of the parse_zillow_page.py module.")
+    print("This output should not appear when the file is imported.")
+    # You can add test calls to your parsing functions here
+    # Example:
+    # with open('example_zillow_page.html', 'r') as f:
+    #     html_content = f.read()
+    # stats = parse_zillow_stats(html_content)
+    # print(stats)

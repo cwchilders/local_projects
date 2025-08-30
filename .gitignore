@@ -47,5 +47,3 @@ Thumbs.db      # Windows specific file
 
 # -- specific test/temp dirs --
 temp/
-real_estate/__pycache__/parse_zillow_page.cpython-313.pyc
-real_estate/__pycache__/parse_zillow_page.cpython-313.pyc

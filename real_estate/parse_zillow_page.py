@@ -41,29 +41,29 @@ def parse_zillow_stats(html_content):
     
     return stats
 
-# --- Example Usage ---
-html_snippet = """
-<dl class="styles__StyledOverviewStats-fshdp-8-111-1__sc-1x11gd9-0 kpgmGL">
-	<dt><strong>204 days</strong></dt>
-	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp">on Zillow</dt>
-	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
-	<dt><strong>1,188</strong></dt>
-	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp"><button type="button" aria-expanded="false" aria-haspopup="false" class="TriggerText-c11n-8-111-1__sc-d96jze-0 hAKmPK TooltipPopper-c11n-8-111-1__sc-1v2hxhd-0 isapNu">views</button></dt>
-	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
-	<dt><strong>61</strong></dt>
-	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp"><button type="button" aria-expanded="false" aria-haspopup="false" class="TriggerText-c11n-8-111-1__sc-d96jze-0 hAKmPK TooltipPopper-c11n-8-111-1__sc-1v2hxhd-0 isapNu">saves</button></dt>
-	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
-</dl>
-"""
+# # --- Example Usage ---
+# html_snippet = """
+# <dl class="styles__StyledOverviewStats-fshdp-8-111-1__sc-1x11gd9-0 kpgmGL">
+# 	<dt><strong>204 days</strong></dt>
+# 	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp">on Zillow</dt>
+# 	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
+# 	<dt><strong>1,188</strong></dt>
+# 	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp"><button type="button" aria-expanded="false" aria-haspopup="false" class="TriggerText-c11n-8-111-1__sc-d96jze-0 hAKmPK TooltipPopper-c11n-8-111-1__sc-1v2hxhd-0 isapNu">views</button></dt>
+# 	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
+# 	<dt><strong>61</strong></dt>
+# 	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp"><button type="button" aria-expanded="false" aria-haspopup="false" class="TriggerText-c11n-8-111-1__sc-d96jze-0 hAKmPK TooltipPopper-c11n-8-111-1__sc-1v2hxhd-0 isapNu">saves</button></dt>
+# 	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
+# </dl>
+# """
 
-zillow_stats = parse_zillow_stats(html_snippet)
+# zillow_stats = parse_zillow_stats(html_snippet)
 
-if zillow_stats:
-    print(f"Days on Zillow: {zillow_stats['days_on_zillow']}")
-    print(f"Views: {zillow_stats['views']}")
-    print(f"Saves: {zillow_stats['saves']}")
-else:
-    print("Could not parse Zillow stats from the HTML.")
+# if zillow_stats:
+#     print(f"Days on Zillow: {zillow_stats['days_on_zillow']}")
+#     print(f"Views: {zillow_stats['views']}")
+#     print(f"Saves: {zillow_stats['saves']}")
+# else:
+#     print("Could not parse Zillow stats from the HTML.")
 
 
 
@@ -90,7 +90,7 @@ def parse_zillow_facts(html_content):
             category_title = category_title_tag.get_text(strip=True) if category_title_tag else 'Miscellaneous'
             data[group_title][category_title] = [li.get_text(strip=True) for li in fact_category.find_all('li')]
 
-    print(data)
+    # print(data)
     return data
 
 
@@ -115,18 +115,18 @@ def format_zillow_data(zillow_data):
         formatted_output += "\n---\n\n"
     return formatted_output
 
-# Example Usage:
-zillow_data = {
-    'Interior': {'Bedrooms & bathrooms': ['Bedrooms: 1', 'Bathrooms: 2', '3/4 bathrooms: 2'], 'Heating': ['Natural Gas, Stove'], 'Cooling': ['None'], 'Appliances': ['Included: Oven, Range, Refrigerator'], 'Features': ['Beamed Ceilings, Interior Steps', 'Flooring: Stone, Tile, Wood', 'Basement: Crawl Space', 'Has fireplace: No'], 'Interior area': ['Total structure area: 1,200', 'Total interior livable area: 1,200 sqft']},
-    'Property': {'Parking': ['Total spaces: 3', 'Parking features: None'], 'Accessibility': ['Accessibility features: Not ADA Compliant'], 'Features': ['Levels: Two,Multi/Split', 'Stories: 2'], 'Lot': ['Size: 0.29 Acres'], 'Details': ['Additional structures: Storage', 'Parcel number: 654420', 'Zoning: R-1, 2, 3, 4, 5, 6', 'Zoning description: residential', 'Special conditions: Standard']},
-    'Construction': {'Type & style': ['Home type: SingleFamily', 'Architectural style: Multi-Level,Northern New Mexico', 'Property subtype: Single Family Residence'], 'Materials': ['Adobe, Frame', 'Foundation: Basement', 'Roof: Metal,Pitched'], 'Condition': ['Year built: 1870']},
-    'Utilities & green energy': {'Miscellaneous': ['Sewer: Public Sewer', 'Water: Public', 'Utilities for property: Electricity Available']},
-    'Community & hoa': {'HOA': ['Has HOA: No'], 'Location': ['Region: Las Vegas']},
-    'Financial & listing details': {'Miscellaneous': ['Price per square foot: $208/sqft', 'Tax assessed value: $135,283', 'Annual tax amount: $1,303', 'Date on market: 7/29/2025', 'Cumulative days on market: 29 days', 'Listing terms: Cash,New Loan']}
-}
+# # Example Usage:
+# zillow_data = {
+#     'Interior': {'Bedrooms & bathrooms': ['Bedrooms: 1', 'Bathrooms: 2', '3/4 bathrooms: 2'], 'Heating': ['Natural Gas, Stove'], 'Cooling': ['None'], 'Appliances': ['Included: Oven, Range, Refrigerator'], 'Features': ['Beamed Ceilings, Interior Steps', 'Flooring: Stone, Tile, Wood', 'Basement: Crawl Space', 'Has fireplace: No'], 'Interior area': ['Total structure area: 1,200', 'Total interior livable area: 1,200 sqft']},
+#     'Property': {'Parking': ['Total spaces: 3', 'Parking features: None'], 'Accessibility': ['Accessibility features: Not ADA Compliant'], 'Features': ['Levels: Two,Multi/Split', 'Stories: 2'], 'Lot': ['Size: 0.29 Acres'], 'Details': ['Additional structures: Storage', 'Parcel number: 654420', 'Zoning: R-1, 2, 3, 4, 5, 6', 'Zoning description: residential', 'Special conditions: Standard']},
+#     'Construction': {'Type & style': ['Home type: SingleFamily', 'Architectural style: Multi-Level,Northern New Mexico', 'Property subtype: Single Family Residence'], 'Materials': ['Adobe, Frame', 'Foundation: Basement', 'Roof: Metal,Pitched'], 'Condition': ['Year built: 1870']},
+#     'Utilities & green energy': {'Miscellaneous': ['Sewer: Public Sewer', 'Water: Public', 'Utilities for property: Electricity Available']},
+#     'Community & hoa': {'HOA': ['Has HOA: No'], 'Location': ['Region: Las Vegas']},
+#     'Financial & listing details': {'Miscellaneous': ['Price per square foot: $208/sqft', 'Tax assessed value: $135,283', 'Annual tax amount: $1,303', 'Date on market: 7/29/2025', 'Cumulative days on market: 29 days', 'Listing terms: Cash,New Loan']}
+# }
 
-formatted_description = format_zillow_data(zillow_data)
-print(formatted_description)
+# formatted_description = format_zillow_data(zillow_data)
+# print(formatted_description)
 
 
 
