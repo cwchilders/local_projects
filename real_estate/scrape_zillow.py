@@ -3,7 +3,8 @@ import sys
 import argparse
 from playwright_stealth import Stealth
 from playwright.sync_api import sync_playwright
-import parse_zillow_page as page
+import parse_zillow_page as zillow_page
+import zillow_property_manager as property_manager
 
 
 def scrape_zillow(zillow_url):
@@ -30,7 +31,7 @@ def scrape_zillow(zillow_url):
                 print("CAPTCHA detected. Cannot proceed.")
                 return None
             # --- End CAPTCHA check ---
-            
+
             # --- New: Add a wait to ensure the page is fully loaded ---
             # Wait for the page by waiting for a known element to load.
             # Use a try-except block to handle cases where the element doesn't exist.
@@ -86,11 +87,14 @@ def main():
 
     for url in urls:
         content = scrape_zillow(url)
-        stats = page.parse_zillow_stats(content)
-        facts = page.parse_zillow_facts(content)
+        stats = zillow_page.parse_zillow_stats(content)
+        facts = zillow_page.parse_zillow_facts(content)
 
-        name = page.get_property_name(url)
-        print(f"\nProperty: {name} ({url})")
+        name = property_manager.get_property_name(url)
+        print(f"\nProperty: {name}")
+        id = property_manager.get_property_id_from_url(url)
+        print(f"Zillow Property ID: {id}")
+
 
         if stats:
             print(f"Stats for {url}:")
@@ -100,7 +104,7 @@ def main():
             print(f"No stats retrieved for {url}.")
 
         if facts:
-            formatted_description = page.format_zillow_data(facts)
+            formatted_description = zillow_page.format_zillow_data(facts)
             print(formatted_description)
         else:
             print(f"No facts retrieved for {url}.")

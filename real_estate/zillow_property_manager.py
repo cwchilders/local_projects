@@ -1,27 +1,6 @@
 from urllib.parse import urlparse
 import re
 
-def get_property_id_from_url(url):
-    """
-    Extracts the unique Zillow Property ID (ZPID) from the URL.
-    """
-    parsed_url = urlparse(url)
-    path_segments = parsed_url.path.split('/')
-    
-    # A Zillow URL typically has the ZPID as the last segment before the trailing slash
-    # e.g., /b/309-floresta-st-las-vegas-nm-123456/
-    # We look for a segment that is not empty and is likely the ZPID.
-    for segment in reversed(path_segments):
-        if segment.isdigit():
-            return segment
-            
-    # For newer URLs like /homes/ZPID/, the ID is part of the path
-    zpid_match = re.search(r'zpid_(\d+)', parsed_url.query)
-    if zpid_match:
-        return zpid_match.group(1)
-        
-    return None
-
 
 def get_property_id_from_url(url):
     """
@@ -48,3 +27,40 @@ def get_property_id_from_url(url):
         return zpid_query_match.group(1)
     # nope --nada...
     return None
+
+def get_property_name(url):
+    """
+    Extracts the property name from a Zillow URL.
+    
+    The name is typically the segment between 'homedetails/' and the ZPID.
+    
+    Args:
+        url (str): The full Zillow URL.
+        
+    Returns:
+        str: The extracted property name, with hyphens replaced by spaces.
+    """
+    try:
+        # Find the starting point in the URL
+        start_index = url.find('homedetails/') + len('homedetails/')
+        if start_index < len('homedetails/'):
+            return "Unknown Property"
+        
+        # Find the end point by looking for the '_zpid' part
+        # This is more reliable as it doesn't rely on the final slash
+        end_index = url.find('_zpid/')
+        if end_index == -1:
+            end_index = url.rfind('/')
+
+        # Extract the segment and replace hyphens with spaces
+        property_segment = url[start_index:end_index]
+        return property_segment.replace('-', ' ')
+        
+    except Exception as e:
+        print(f"Error extracting property name from URL: {e}")
+        return "Unknown Property"
+    
+# Example usage:
+# url = "https://www.zillow.com/homedetails/309-Floresta-St-Las-Vegas-NM-87701/123456_zpid/"
+# print(get_property_id_from_url(url))  # Output: 123456
+# print(get_property_name(url)) # Output: "309 Floresta St Las Vegas NM 87701"     

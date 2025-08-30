@@ -1,9 +1,7 @@
 # test_zillow_parse.py
 
 import sys
-# Add the parent directory to the path so we can import the function
-sys.path.append('..')
-from parse_zillow import parse_zillow_stats
+
 
 # The HTML snippet you provided
 test_html = """
@@ -23,7 +21,7 @@ test_html = """
 def run_test():
     """Runs a test on the parse_zillow_stats function."""
     print("Running test...")
-    stats = parse_zillow_stats(test_html)
+    stats = parse_zillow(test_html)
 
     # Check if the function returned a dictionary
     if stats is None:

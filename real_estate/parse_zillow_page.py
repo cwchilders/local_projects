@@ -65,6 +65,10 @@ if zillow_stats:
 else:
     print("Could not parse Zillow stats from the HTML.")
 
+
+
+
+
 def parse_zillow_facts(html_content):
     """
     Parses Zillow facts from an HTML string using BeautifulSoup.
@@ -88,6 +92,9 @@ def parse_zillow_facts(html_content):
 
     print(data)
     return data
+
+
+
 
 def format_zillow_data(zillow_data):
     """
@@ -120,6 +127,8 @@ zillow_data = {
 
 formatted_description = format_zillow_data(zillow_data)
 print(formatted_description)
+
+
 
 
 def format_zillow_stats(zillow_stats):
