@@ -112,7 +112,7 @@ def format_zillow_data(zillow_data):
         for sub_category_name, facts in sub_categories.items():
             fact_string = "; ".join(facts)
             formatted_output += f"* **{sub_category_name.title()}:** {fact_string}\n"
-        formatted_output += "\n---\n\n"
+        formatted_output += "\n---\n"
     return formatted_output
 
 # # Example Usage:
@@ -146,3 +146,79 @@ def format_zillow_stats(zillow_stats):
         formatted_output += f"* **{key.replace('_', ' ').capitalize()}:** {value}\n"
     formatted_output += "\n---\n\n"
     return formatted_output 
+
+
+def extract_source_info(mls_info_div):
+    """
+    Extracts source, MLS number, and originating MLS from the given div.
+    This function uses a more robust approach by looking for key strings,
+    as the class names are prone to change.
+    """
+    source_data = {}
+    # Find the div that contains the source information.
+    # We use a lambda function to find any class that contains 'Spacer',
+    # as this is more likely to be stable than the full class name.
+    # The search is restricted to the mls_info_div passed to this function.
+    source_info_div = mls_info_div.find('div', class_=lambda x: x and 'Spacer' in x)
+    if source_info_div:
+        # Get all span tags within the identified div
+        spans = source_info_div.find_all('span')
+        for span in spans:
+            text = span.get_text(strip=True)
+            if "Source:" in text:
+                # Remove prefix, then the trailing comma, and finally strip whitespace
+                clean_text = text.replace('Source:', '').replace(',', '').strip()
+                source_data['Source'] = clean_text
+            elif "MLS#:" in text:
+                # Remove prefix, then the trailing comma, and finally strip whitespace
+                clean_text = text.replace('MLS#:', '').replace(',', '').strip()
+                source_data['MLS#'] = clean_text
+            elif "Originating MLS:" in text:
+                # Remove prefix, then the trailing comma, and finally strip whitespace
+                clean_text = text.replace('Originating MLS:', '').replace(',', '').strip()
+                source_data['Originating MLS'] = clean_text
+    return source_data
+
+def extract_mls_data(html_content):
+    """
+    Extracts MLS information from a given HTML string.
+
+    Args:
+        html_content (str): The HTML content of the webpage.
+
+    Returns:
+        dict: A dictionary containing the extracted MLS data.
+    """
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    data = {}
+
+    # Find the main MLS information div
+    mls_info_div = soup.find('div', {'aria-label': 'MLS information'})
+    if not mls_info_div:
+        print("Could not find the main MLS information div.")
+        return data
+
+    # Extract the 'Listing updated' date
+    listing_updated_tag = mls_info_div.find('p', {'data-testid': 'current-list-attribution-last-updated'})
+    if listing_updated_tag:
+        # The text is split across a <span> and a text node, so we use .get_text()
+        data['Listing updated'] = listing_updated_tag.get_text(strip=True).replace('Listing updated:', '').strip()
+
+    # Extract the agent and broker information
+    listed_by_div = mls_info_div.find('div', {'data-testid': 'seller-attribution'})
+    if listed_by_div:
+        agent_tag = listed_by_div.find('p', {'data-testid': 'attribution-LISTING_AGENT'})
+        if agent_tag:
+            # .get_text(separator=' ', strip=True) joins the text nodes with a space
+            data['Listed by agent'] = agent_tag.get_text(separator=' ', strip=True)
+
+        broker_tag = listed_by_div.find('p', {'data-testid': 'attribution-BROKER'})
+        if broker_tag:
+            data['Listed by broker'] = broker_tag.get_text(separator=' ', strip=True)
+
+    # Extract source, MLS number, and originating MLS using the new helper function
+    source_info = extract_source_info(mls_info_div)
+    data.update(source_info)
+
+    return data

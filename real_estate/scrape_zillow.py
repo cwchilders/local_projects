@@ -1,10 +1,12 @@
 import os
 import sys
 import argparse
+import time
 from playwright_stealth import Stealth
 from playwright.sync_api import sync_playwright
 import parse_zillow_page as zillow_page
 import zillow_property_manager as property_manager
+from zillow_image_manager import extract_image_src
 
 
 def scrape_zillow(zillow_url):
@@ -84,18 +86,26 @@ def main():
         print(f"Error: The file {args.url_file} was not found.")
         sys.exit(1)
 
-    print(f"\nListings to scrape from: {args.url_file:}")
+    print(f"\nListings from: {args.url_file:}")
 
     for url in urls:
         content = scrape_zillow(url)
         stats = zillow_page.parse_zillow_stats(content)
         facts = zillow_page.parse_zillow_facts(content)
-
+        listing_data = zillow_page.extract_mls_data(content)
         name = property_manager.get_property_name(url)
+        image = extract_image_src(content)
+
+        if image:
+            print(f"![{name}]{image}")
+        else:
+            print("No image URL found.")
+     
         print(f"\n## Property: {name}")
         id = property_manager.get_property_id_from_url(url)
         print(f"## Zillow Property ID: {id}")
 
+        print("\n---\n -- Stats --")
 
         if stats:
             #print(f"Stats for {url}:")
@@ -104,11 +114,25 @@ def main():
         else:
             print(f"No stats retrieved for {url}.")
 
+        print("\n---\n")
+        if listing_data:
+            print("## MLS Data:")
+            for key, value in listing_data.items():
+                print(f"  - {key}: {value}")
+        else:
+            print(f"No MLS data retrieved for {url}.")  
+
+        print("\n---\n")
+
         if facts:
             formatted_description = zillow_page.format_zillow_data(facts)
+            print("## Facts:")
             print(formatted_description)
         else:
             print(f"No facts retrieved for {url}.")
 
+        print("\n---\n")
+        print("Waiting 2 minutes before the next scrape...")
+        time.sleep(120)
 if __name__ == "__main__":
     main()
