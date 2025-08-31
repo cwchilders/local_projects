@@ -47,3 +47,5 @@ Thumbs.db      # Windows specific file
 
 # -- specific test/temp dirs --
 temp/
+page_scrapes/
+test_outputs/
