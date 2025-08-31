@@ -111,12 +111,29 @@ def rename_files_in_dir(directory):
             except Exception as e:
                 print(f"An unexpected error occurred with file '{filename}': {e}")
 
+
 def has_extension(filename):
     """
     Checks if a filename has an extension.
     """
     return os.path.splitext(filename)[1] != ''
 
+def property_address_from_filename(filename):
+    """
+    Extracts the property address from a given filename by removing the extension
+    and replacing underscores with spaces.
+
+    Args:
+        filename (str): The filename to process.
+
+    Returns:
+        str: The extracted property address.
+    """
+    # Remove the file extension
+    base_name = os.path.splitext(os.path.basename(filename))[0]
+    # Replace underscores with spaces
+    address = base_name.replace('_', ' ')
+    return address
 
 if __name__ == "__main__":
     # If the user provides a directory, use it. 

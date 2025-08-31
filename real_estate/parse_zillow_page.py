@@ -1,5 +1,12 @@
+from pathlib import Path
 from bs4 import BeautifulSoup
 import re
+import os
+import argparse
+import sys
+import zillow_property_manager as property_manager
+from zillow_image_manager import extract_image_src
+from zillow_file_manager import property_address_from_filename
 
 def parse_zillow_stats(html_content):
     """
@@ -222,3 +229,102 @@ def extract_mls_data(html_content):
     data.update(source_info)
 
     return data
+
+def main():
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Define the default scrape folder
+    default_scrapes = 'page_scrapes'
+
+    # Construct the full default file path
+    default_scrapes_path = os.path.join(script_dir, default_scrapes)
+
+    """Main function to handle command-line arguments and run the scraper."""
+    parser = argparse.ArgumentParser(description='Scrape Zillow listing from scrape folder.')
+   # Add the 'url_file' argument with the absolute default path
+    parser.add_argument('scrapes_folder', 
+                    nargs='?', 
+                    default=default_scrapes_path,
+                    help=f'Path to a folder containing Zillow html scrapes. Defaults to "{default_scrapes_path}" if not provided.')
+    args = parser.parse_args()  
+    scrapes_folder_path = Path(args.scrapes_folder)
+
+    print('Scrape Zillow listings')
+
+    # Check if the directory exists first
+    try:
+        if not scrapes_folder_path.is_dir():
+            raise FileNotFoundError(f"The directory '{scrapes_folder_path}' was not found.")
+
+    except FileNotFoundError:
+        print(f"Error: The folder {zlw_files} was not found.")
+        sys.exit(1)
+
+    # Use a generator expression to find all files with a .zlw extension
+    zlw_files = scrapes_folder_path.glob('*.zlw')
+        
+    print(f"\nListings from: {scrapes_folder_path}")
+
+    for file_path in zlw_files:
+        # Print the name of the file being processed
+        print(f"Reading content from: {file_path.name}")
+    
+        try:
+            # Open the file for reading ('r') with the 'with' statement
+            with open(file_path, 'r', encoding='utf-8') as f:
+                # Read the entire content of the file into a single string
+                content = f.read()
+            stats = parse_zillow_stats(content)
+            facts = parse_zillow_facts(content)
+            listing_data = extract_mls_data(content)
+            name = property_address_from_filename(file_path.name)
+            image = extract_image_src(content)
+
+            if image:
+                print(f"![{name}]{image}")
+            else:
+                print("No image URL found.")
+        
+            # print(f"\n## Property: {name}")
+            # id = property_manager.get_mls_from_filename(file_path.name)
+            # print(f"## Zillow Property ID: {id}")
+
+            print("\n---\n -- Stats --")
+
+            if stats:
+                #print(f"Stats for {url}:")
+                for key, value in stats.items():
+                    print(f"  - {key.replace('_', ' ').capitalize()}: {value}")
+            else:
+                print(f"No stats retrieved for {name}.")
+
+            print("\n---\n")
+            if listing_data:
+                print("## MLS Data:")
+                for key, value in listing_data.items():
+                    print(f"  - {key}: {value}")
+            else:
+                print(f"No MLS data retrieved for {name}.")  
+
+            print("\n---\n")
+
+            if facts:
+                formatted_description = format_zillow_data(facts)
+                print("## Facts:")
+                print(formatted_description)
+            else:
+                print(f"No facts retrieved for {name}.")
+
+            print("\n---\n")
+                    
+        except IOError as e:
+            # Catch any potential file I/O errors (e.g., permission denied)
+            print(f"Error reading file {file_path}: {e}")
+        except UnicodeDecodeError as e:
+            # Catch encoding errors if the file isn't UTF-8
+            print(f"Encoding error with file {file_path}: {e}")
+
+        
+if __name__ == "__main__":
+    main()
