@@ -10,7 +10,7 @@ def extract_image_src(html_content):
     Returns:
         str: The URL of the image, or None if not found.
     """
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
     
     # Find the <li> tag with the specific class
     list_item = soup.find('li', class_='media-stream-tile')

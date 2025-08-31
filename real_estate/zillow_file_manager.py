@@ -18,7 +18,7 @@ def extract_address(html_content):
     """
     try:
         # Create a BeautifulSoup object to parse the HTML
-        soup = BeautifulSoup(html_content, 'html.parser')
+        soup = BeautifulSoup(html_content, 'lxml')
 
         # Use re.compile to find a class attribute that contains the substring "AddressWrapper"
         address_div = soup.find('div', class_=re.compile("AddressWrapper"))
@@ -95,10 +95,10 @@ def rename_files_in_dir(directory):
                     new_filename = f"{sanitized_name}.zlw"
                     new_full_path = os.path.join(root, new_filename)
                     
-                    # Ensure the new filename doesn't already exist
-                    if os.path.exists(new_full_path):
-                        print(f"Warning: File {new_filename} already exists. Skipping {filename}.")
-                        continue
+                    # # Ensure the new filename doesn't already exist
+                    # if os.path.exists(new_full_path):
+                    #     print(f"Warning: File {new_filename} already exists. Skipping {filename}.")
+                    #     continue
 
                     # Rename the file
                     os.rename(full_path, new_full_path)

@@ -18,7 +18,7 @@ def parse_zillow_stats(html_content):
     Returns:
         dict: A dictionary with the parsed stats, or None if the element is not found.
     """
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
     
     # Use a regex to find the main <dl> element with 'StyledOverviewStats' in its class name.
     stats_dl_regex = re.compile(r'StyledOverviewStats')
@@ -73,9 +73,6 @@ def parse_zillow_stats(html_content):
 #     print("Could not parse Zillow stats from the HTML.")
 
 
-
-
-
 def parse_zillow_facts(html_content):
     """
     Parses Zillow facts from an HTML string using BeautifulSoup.
@@ -86,7 +83,7 @@ def parse_zillow_facts(html_content):
     Returns:
         dict: A nested dictionary with the parsed facts.
     """
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
 
     data = {}
     for category_group in soup.find_all('div', {'data-testid': 'category-group'}):
@@ -99,9 +96,6 @@ def parse_zillow_facts(html_content):
 
     # print(data)
     return data
-
-
-
 
 def format_zillow_data(zillow_data):
     """
@@ -136,8 +130,6 @@ def format_zillow_data(zillow_data):
 # print(formatted_description)
 
 
-
-
 def format_zillow_stats(zillow_stats):
     """
     Formats Zillow stats
@@ -153,7 +145,6 @@ def format_zillow_stats(zillow_stats):
         formatted_output += f"* **{key.replace('_', ' ').capitalize()}:** {value}\n"
     formatted_output += "\n---\n\n"
     return formatted_output 
-
 
 def extract_source_info(mls_info_div):
     """
@@ -196,7 +187,7 @@ def extract_mls_data(html_content):
     Returns:
         dict: A dictionary containing the extracted MLS data.
     """
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
 
     data = {}
 
@@ -282,7 +273,7 @@ def main():
             image = extract_image_src(content)
 
             if image:
-                print(f"![{name}]{image}")
+                print(f"![{name}]({image})")
             else:
                 print("No image URL found.")
         

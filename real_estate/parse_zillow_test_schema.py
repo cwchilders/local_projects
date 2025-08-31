@@ -11,7 +11,7 @@ def parse_zillow_stats(html_content):
     Returns:
         dict: A dictionary with the parsed stats, or None if the element is not found.
     """
-    soup = BeautifulSoup(html_content, 'html.parser')
+    soup = BeautifulSoup(html_content, 'lxml')
     
     # Use a regex to find the main <dl> element with 'StyledOverviewStats' in its class name.
     stats_dl_regex = re.compile(r'StyledOverviewStats')
