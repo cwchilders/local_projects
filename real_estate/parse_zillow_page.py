@@ -276,7 +276,8 @@ def main():
                 print(f"![{name}]({image})")
             else:
                 print("No image URL found.")
-        
+
+            address = parse_property_address(name, GOOGLE_MAPS_API_KEY)
             print(f"\n## Property: {name}")
             # Get the MLS ID from the listing_data
             id = listing_data.get('MLS#', 'N/A')

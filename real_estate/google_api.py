@@ -1,14 +1,17 @@
 import requests
 import json
+import os
 
-def get_city_from_address(address, api_key):
+GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
+
+def get_city_from_address(address):
     """
     Uses the Google Maps Geocoding API to find the city from an address.
     """
     base_url = "https://maps.googleapis.com/maps/api/geocode/json"
     params = {
         "address": address,
-        "key": api_key
+        "key": GOOGLE_MAPS_API_KEY
     }
     
     try:
@@ -33,11 +36,40 @@ def get_city_from_address(address, api_key):
     
     return None
 
+
+def get_formatted_address(address):
+    """
+    Uses the Google Maps Geocoding API to get the formatted address.
+    """
+    base_url = "https://maps.googleapis.com/maps/api/geocode/json"
+    params = {
+        "address": address,
+        "key": GOOGLE_MAPS_API_KEY
+    }
+    
+    try:
+        response = requests.get(base_url, params=params)
+        response.raise_for_status()  # Raise an HTTPError for bad responses
+        data = response.json()
+        
+        # Check if the API returned a valid result
+        if data['status'] == 'OK':
+            return data['results'][0]['formatted_address']
+                    
+    except requests.exceptions.RequestException as e:
+        print(f"API request failed: {e}")
+    except (KeyError, IndexError):
+        # Handle cases where the expected data structure is not found
+        print("Could not parse formatted address from API response.")
+    
+    return None
+
 if __name__ == "__main__":
-    # Example usage (replace with your actual API key)
-    API_KEY = "AIzaSyCbVOp8Ar2ENFhLyepevn-3lX7cTRdqj5Q"
+    # Example usage
     address = "194 State Road 573 Espanola NM 87575"
-    city = get_city_from_address(address, API_KEY)
+    city = get_city_from_address(address)
+    address = get_formatted_address(address)
+    print(f"Formatted Address: {address}")
 
     if city:
         print(f"The city is: {city}")
