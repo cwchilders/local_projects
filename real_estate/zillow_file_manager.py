@@ -135,6 +135,25 @@ def property_address_from_filename(filename):
     address = base_name.replace('_', ' ')
     return address
 
+
+def save_file_lines(lines, output_filename):
+    """
+    Saves a list of lines to a specified output file.
+
+    Args:
+        lines (list): List of strings to write to the file.
+        output_filename (str): The name of the output file.
+    """
+    try:
+        with open(output_filename, 'w', encoding='utf-8') as f:
+            for line in lines:
+                f.write(line + '\n')
+        print(f"Saved output to {output_filename}")
+    except IOError as e:
+        print(f"Error writing to file {output_filename}: {e}")
+
+        
+
 if __name__ == "__main__":
     # If the user provides a directory, use it. 
     # Otherwise, use the page_scrapes under current directory.

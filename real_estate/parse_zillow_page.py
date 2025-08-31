@@ -6,7 +6,8 @@ import argparse
 import sys
 import zillow_property_manager as property_manager
 from zillow_image_manager import extract_image_src
-from zillow_file_manager import property_address_from_filename
+from zillow_file_manager import property_address_from_filename, save_file_lines
+from google_api import get_formatted_address
 
 def parse_zillow_stats(html_content):
     """
@@ -223,6 +224,8 @@ def extract_mls_data(html_content):
 
 def main():
 
+    file_lines = []
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Define the default scrape folder
@@ -274,14 +277,24 @@ def main():
 
             if image:
                 print(f"![{name}]({image})")
+                file_lines.append(f"![{name}]({image})")
             else:
                 print("No image URL found.")
 
-            address = parse_property_address(name, GOOGLE_MAPS_API_KEY)
+            address = get_formatted_address(name)
             print(f"\n## Property: {name}")
+            file_lines.append(f"\n## Property: {name}")
+            if address:
+                print(f"## Address: {address}")
+                file_lines.append(f"### Address: {address}")
+            else:
+                print("No formatted address found.")
+                file_lines.append("No formatted address found.")
+
             # Get the MLS ID from the listing_data
             id = listing_data.get('MLS#', 'N/A')
-            print(f"## MLS Property ID: {id}")
+            print(f"### MLS Property ID: {id}")
+            file_lines.append(f"## MLS Property ID: {id}")
 
             print("\n---\n -- Stats --")
 
@@ -289,28 +302,39 @@ def main():
                 #print(f"Stats for {url}:")
                 for key, value in stats.items():
                     print(f"  - {key.replace('_', ' ').capitalize()}: {value}")
+                    file_lines.append(f"  - {key.replace('_', ' ').capitalize()}: {value}")
             else:
                 print(f"No stats retrieved for {name}.")
+                file_lines.append(f"No stats retrieved for {name}.")
 
             print("\n---\n")
             if listing_data:
                 print("## MLS Data:")
+                file_lines.append("## MLS Data:")
                 for key, value in listing_data.items():
                     print(f"  - {key}: {value}")
+                    file_lines.append(f"  - {key}: {value}")
             else:
                 print(f"No MLS data retrieved for {name}.")  
+                file_lines.append(f"No MLS data retrieved for {name}.")
 
             print("\n---\n")
 
             if facts:
                 formatted_description = format_zillow_data(facts)
                 print("## Facts:")
+                file_lines.append("## Facts:")
+                file_lines.append(formatted_description)
                 print(formatted_description)
             else:
                 print(f"No facts retrieved for {name}.")
+                file_lines.append(f"No facts retrieved for {name}.")
 
             print("\n---\n")
+            file_lines.append("\n---\n")
                     
+            save_file_lines(file_lines, file_path.name+'.md')
+
         except IOError as e:
             # Catch any potential file I/O errors (e.g., permission denied)
             print(f"Error reading file {file_path}: {e}")
