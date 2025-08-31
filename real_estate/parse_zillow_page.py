@@ -286,9 +286,10 @@ def main():
             else:
                 print("No image URL found.")
         
-            # print(f"\n## Property: {name}")
-            # id = property_manager.get_mls_from_filename(file_path.name)
-            # print(f"## Zillow Property ID: {id}")
+            print(f"\n## Property: {name}")
+            # Get the MLS ID from the listing_data
+            id = listing_data.get('MLS#', 'N/A')
+            print(f"## MLS Property ID: {id}")
 
             print("\n---\n -- Stats --")
 
