@@ -78,7 +78,9 @@ def rename_files_in_dir(directory):
     for root, _, files in os.walk(directory):
         for filename in files:
             full_path = os.path.join(root, filename)
-            
+            # Skip files that already have an extension (already processed)
+            if has_extension(full_path):
+                continue
             try:
                 # Read the file content
                 with open(full_path, 'r', encoding='utf-8') as f:
@@ -109,8 +111,16 @@ def rename_files_in_dir(directory):
             except Exception as e:
                 print(f"An unexpected error occurred with file '{filename}': {e}")
 
+def has_extension(filename):
+    """
+    Checks if a filename has an extension.
+    """
+    return os.path.splitext(filename)[1] != ''
+
+
 if __name__ == "__main__":
-    # If the user provides a directory, use it. Otherwise, use the current directory.
+    # If the user provides a directory, use it. 
+    # Otherwise, use the page_scrapes under current directory.
     if len(sys.argv) > 1:
         dir_to_process = sys.argv[1]
     else:
