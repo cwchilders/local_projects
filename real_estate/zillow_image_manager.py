@@ -34,7 +34,15 @@ def extract_image_src(html_content):
             
     return None
 
-
+# class_=lambda c: c and 'StyledTextButton' in c: 
+# This is a powerful feature of BeautifulSoup. 
+# Instead of a simple string, you can pass a function to the class_ argument.
+# lambda c: creates an anonymous function that takes one argument, c (which represents each class string it encounters).
+# c and 'StyledTextButton' in c: 
+# This condition checks if the class string c is not empty # and if it contains the substring 'StyledTextButton'.
+# This approach ensures that even if the unique random characters change, as long as the core class name remains constant, 
+# your code will correctly identify the target element. It's a much more stable and generalized solution for dealing 
+# with this type of HTML structure. 
 def extract_address_from_html(html_content):
     # Create a BeautifulSoup object
     soup = BeautifulSoup(html_content, 'lxml')
