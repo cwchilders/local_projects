@@ -1,4 +1,13 @@
+import argparse
 from bs4 import BeautifulSoup
+import real_estate_config as config
+import os
+
+# --- Mandatory first step for any script in this project ---
+# Call the function to ensure configurations are loaded.
+# This makes the dependency explicit.
+config.ensure_config()
+
 
 def extract_image_src(html_content):
     """
@@ -25,13 +34,121 @@ def extract_image_src(html_content):
             
     return None
 
+# function to extract the largest image URL from a srcset attribute
+# This function is used to process gallery images with multiple resolutions
+def get_largest_imageURL_from_srcset(srcset_string):
+    """
+    Extracts the URL of the largest image from a srcset string.
+    The largest image is determined by the largest width value (e.g., '1536w').
+    """
+    largest_url = ""
+    max_width = 0
+
+    # Split the srcset string into individual image-width pairs
+    image_pairs = srcset_string.split(', ')
+
+    for pair in image_pairs:
+        parts = pair.split(' ')
+        if len(parts) == 2:
+            url = parts[0]
+            width_str = parts[1]
+
+            # Extract the numerical width and convert to an integer
+            if width_str.endswith('w'):
+                try:
+                    width = int(width_str[:-1])
+                    if width > max_width:
+                        max_width = width
+                        largest_url = url
+                except ValueError:
+                    continue
+    return largest_url
+
+def extract_images_from_gallery(html_content):
+    # Parse the HTML using BeautifulSoup with the lxml parser
+    soup = BeautifulSoup(html_content, 'lxml')
+
+    # Find all <source> tags with the type attribute set to "image/jpeg"
+    source_tags = soup.find_all('source', {'type': 'image/jpeg'})
+
+    # List to store the largest image URL for each srcset
+    largest_urls = []
+
+    # Iterate through each <source> tag and extract the largest URL
+    for tag in source_tags:
+        srcset_value = tag.get('srcset')
+        if srcset_value:
+            largest_url = get_largest_imageURL_from_srcset(srcset_value)
+            if largest_url:
+                largest_urls.append(largest_url)
+
+    # Print the extracted URLs
+    print(largest_urls)
+    return largest_urls
+
+def download_image(image_url, save_path):
+    """
+    Downloads an image from the specified URL and saves it to the given path.
+    
+    Args:
+        image_url (str): The URL of the image to download.
+        save_path (str): The file path where the image will be saved.
+    """
+    import requests
+    
+    response = requests.get(image_url)
+    
+    if response.status_code == 200:
+        with open(save_path, 'wb') as file:
+            file.write(response.content)
+        print(f"Image successfully downloaded: {save_path}")
+    else:
+        print(f"Failed to retrieve image. Status code: {response.status_code}")
+
+def process_image_gallery_files(scrapes_dir=os.getenv('RE_DEFAULT_FOLDER_IMAGE_SCRAPES'), 
+                                download=False, 
+                                output_dir=os.getenv('RE_DEFAULT_FOLDER_TEST')):
+    """
+    Processes an image gallery HTML snippet to extract and optionally download images.
+    
+    Args:
+        scrapes_dir (str): The folder with HTML scrapes of the image galleries.
+        download (bool): Whether to download the images.
+        output_dir (str): The directory to save downloaded images if download is True.
+    """
+    if not os.path.exists(scrapes_dir):
+        print(f"Scrapes directory does not exist: {scrapes_dir}")
+        return None
+    html_files = [filepath for filepath in os.listdir(scrapes_dir)]
+    for html_content in html_files:
+        with open(os.path.join(scrapes_dir, html_content), 'r') as file:
+            html_content = file.read()
+            image_urls = extract_images_from_gallery(html_content)
+    
+    if download and output_dir:
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        for idx, url in enumerate(image_urls):
+            file_extension = os.path.splitext(url)[1]
+            save_path = os.path.join(output_dir, f"image_{idx + 1}{file_extension}")
+            download_image(url, save_path)
+            print(f"Downloaded image to: {save_path}")
+    
+    print(f"Extracted Image URLs: {image_urls}")
+    return image_urls if image_urls else None
+    
 
 # --- Example Usage ---
 if __name__ == "__main__":
-    html_snippet = """<li class="Tile__StyledTile-fshdp-8-111-1__sc-gw6377-0 kttjLL media-stream-tile media-stream-tile--prominent" role="listitem"><figure><button aria-label="view larger view of the 1 photo of this home" class="sc-hLBbgP StyledCommonComponents__StyledBareButton-fshdp-8-111-1__sc-12pcmv4-6 hnVXxg bxzEYp"><picture class="sc-jNJNQp ftGxJm"><source type="image/webp" srcset="https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_192.webp 192w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_384.webp 384w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_576.webp 576w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_768.webp 768w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_960.webp 960w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_1152.webp 1152w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_1344.webp 1344w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_1536.webp 1536w" sizes="(min-width: 1280px) 768px, (min-width: 1024px) 60vw, (min-width: 900px) 60vw, (min-width: 768px) 55vw, 100vw"><source type="image/jpeg" srcset="https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_192.jpg 192w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_384.jpg 384w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_576.jpg 576w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_768.jpg 768w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_960.jpg 960w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_1152.jpg 1152w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_1344.jpg 1344w, https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_1536.jpg 1536w" sizes="(min-width: 1280px) 768px, (min-width: 1024px) 60vw, (min-width: 900px) 60vw, (min-width: 768px) 55vw, 100vw"><img src="https://photos.zillowstatic.com/fp/fb0e88d02d8b25a69f7f5c0520a4724f-cc_ft_960.jpg" alt=""></picture></button></figure></li>"""
+
+    parser = argparse.ArgumentParser(description="Extract and download images from HTML snippets.")
+    parser.add_argument('--scraped_files_dir', default= os.getenv('RE_DEFAULT_FOLDER_IMAGE_SCRAPES'),type=str, help='Dir with html content to parse for images extraction.')
+    parser.add_argument('--download', action='store_true', help='Flag to download the extracted image.')
+    parser.add_argument('--output', default= os.getenv('RE_DEFAULT_FOLDER_TEST'), type=str, help='Output path to save the downloaded image.')
     
-    extracted_src = extract_image_src(html_snippet)
-    if extracted_src:
-        print(f"Extracted image source: {extracted_src}")
-    else:
-        print("Image source not found.")
+    args = parser.parse_args()
+    
+    img_urls = process_image_gallery_files(args.scraped_files_dir, args.download, args.output)
+    print(f"process_image_gallery_files returned: {img_urls}")
+    
