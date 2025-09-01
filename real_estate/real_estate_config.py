@@ -74,3 +74,7 @@ def set_env_vars_from_json(json_content):
 if __name__ == "__main__":
     ensure_config()
 
+ensure_config()
+scrapes_dir = os.getenv('RE_DEFAULT_FOLDER_PAGE_SCRAPES')
+images_dir = os.getenv('RE_DEFAULT_FOLDER_IMAGE_SCRAPES')
+output_folder = os.getenv('RE_DEFAULT_FOLDER_OUTPUT')
