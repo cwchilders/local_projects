@@ -49,4 +49,11 @@ Thumbs.db      # Windows specific file
 temp/
 page_scrapes/
 test_outputs/
+artifacts/
+output/
+test/
+
+# --- Specific Files ---
+# Ignore specific files that may contain sensitive information or are not needed in version control.
 config/API_KEYS.json
+
