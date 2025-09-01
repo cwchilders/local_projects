@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from pathlib import Path
 from bs4 import BeautifulSoup
 import re
@@ -8,6 +10,15 @@ import zillow_property_manager as property_manager
 from zillow_image_manager import extract_image_src
 from zillow_file_manager import property_address_from_filename, save_file_lines
 from google_api import get_formatted_address
+
+
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+# Define the default scrape folder
+default_scrapes = 'page_scrapes'
+# Construct the full default file path
+default_scrapes_path = os.path.join(script_dir, default_scrapes)
+
 
 def parse_zillow_stats(html_content):
     """
@@ -222,45 +233,37 @@ def extract_mls_data(html_content):
 
     return data
 
-def main():
 
-    file_lines = []
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # Define the default scrape folder
-    default_scrapes = 'page_scrapes'
-
-    # Construct the full default file path
-    default_scrapes_path = os.path.join(script_dir, default_scrapes)
-
-    """Main function to handle command-line arguments and run the scraper."""
-    parser = argparse.ArgumentParser(description='Scrape Zillow listing from scrape folder.')
-   # Add the 'url_file' argument with the absolute default path
-    parser.add_argument('scrapes_folder', 
-                    nargs='?', 
-                    default=default_scrapes_path,
-                    help=f'Path to a folder containing Zillow html scrapes. Defaults to "{default_scrapes_path}" if not provided.')
-    args = parser.parse_args()  
-    scrapes_folder_path = Path(args.scrapes_folder)
+def format_scrape(scrapes_folder_path = default_scrapes_path, output_folder_path = default_scrapes_path):
+    
+    scrapes_folder = Path(scrapes_folder_path)
+    output_folder = Path(output_folder_path)
+    # Create the output directory if it doesn't exist
+    output_folder.mkdir(parents=True, exist_ok=True)
+    print(f"Parsed files will be saved in: {output_folder}")
 
     print('Scrape Zillow listings')
 
     # Check if the directory exists first
     try:
-        if not scrapes_folder_path.is_dir():
-            raise FileNotFoundError(f"The directory '{scrapes_folder_path}' was not found.")
+        if not scrapes_folder.is_dir():
+            raise FileNotFoundError(f"The directory '{scrapes_folder}' was not found.")
 
     except FileNotFoundError:
         print(f"Error: The folder {zlw_files} was not found.")
         sys.exit(1)
 
     # Use a generator expression to find all files with a .zlw extension
-    zlw_files = scrapes_folder_path.glob('*.zlw')
+    zlw_files = scrapes_folder.glob('*.zlw')
         
-    print(f"\nListings from: {scrapes_folder_path}")
+    print(f"\nListings from: {scrapes_folder}")
 
     for file_path in zlw_files:
+
+        file_lines = [] 
+        
         # Print the name of the file being processed
         print(f"Reading content from: {file_path.name}")
     
@@ -333,7 +336,9 @@ def main():
             print("\n---\n")
             file_lines.append("\n---\n")
                     
-            save_file_lines(file_lines, file_path.name+'.md')
+            save_file_lines(file_lines, Path(output_folder) / (file_path.name + '.md'))
+
+            print(f"Finished processing {file_path.name}")
 
         except IOError as e:
             # Catch any potential file I/O errors (e.g., permission denied)
@@ -342,6 +347,26 @@ def main():
             # Catch encoding errors if the file isn't UTF-8
             print(f"Encoding error with file {file_path}: {e}")
 
+    
+
+def main():
+
+    """Main function to handle command-line arguments and run the scraper."""
+    parser = argparse.ArgumentParser(description='Scrape Zillow listing from scrape folder.')
+   # Add the 'scrapes_folder' argument with the absolute default path
+    parser.add_argument('scrapes_folder', 
+                    nargs='?', 
+                    default=default_scrapes_path,
+                    help=f'Path to a folder containing Zillow html scrapes. Defaults to "{default_scrapes_path}" if not provided.')
+    parser.add_argument('-o', '--output_folder', 
+                        type=str, 
+                        default=default_scrapes_path,
+                        help=f'Path to the output folder for scraped files. Defaults to "{default_scrapes_path}" if not provided.')
+    
+    args = parser.parse_args()  
+    format_scrape(args.scrapes_folder, args.output_folder)
         
 if __name__ == "__main__":
     main()
+
+

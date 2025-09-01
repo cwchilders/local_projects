@@ -1,4 +1,4 @@
-#!/home/bill/local_projects/.venv/local_projects/bin/python3
+#!/usr/bin/env python3
 
 import os
 import sys
