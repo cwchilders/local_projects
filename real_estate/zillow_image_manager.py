@@ -1,13 +1,13 @@
 import argparse
 from bs4 import BeautifulSoup
 import real_estate_config as config
+import zillow_file_manager as file_manager
 import os
 
 # --- Mandatory first step for any script in this project ---
 # Call the function to ensure configurations are loaded.
 # This makes the dependency explicit.
 config.ensure_config()
-
 
 def extract_image_src(html_content):
     """
@@ -33,6 +33,25 @@ def extract_image_src(html_content):
             return img_tag.get('src')
             
     return None
+
+
+def extract_address_from_html(html_content):
+    # Create a BeautifulSoup object
+    soup = BeautifulSoup(html_content, 'lxml')
+
+    # Find the button element by checking if its class contains the "StyledTextButton" substring
+    address_button = soup.find('button', class_=lambda c: c and 'StyledTextButton' in c)
+
+    # Check if the element was found and extract the text
+    if address_button:
+        address_text = address_button.get_text(strip=True, separator=' ')
+        address_filename = file_manager.sanitize_filename(address_text)
+        print(address_filename)
+        return address_filename
+    else:
+        print("Address element not found.")
+    return None
+
 
 # function to extract the largest image URL from a srcset attribute
 # This function is used to process gallery images with multiple resolutions
@@ -105,11 +124,11 @@ def download_image(image_url, save_path):
     else:
         print(f"Failed to retrieve image. Status code: {response.status_code}")
 
-def process_image_gallery_files(scrapes_dir=os.getenv('RE_DEFAULT_FOLDER_IMAGE_SCRAPES'), 
+def process_image_gallery_files(scrapes_dir=config.scrapes_dir, 
                                 download=False, 
-                                output_dir=os.getenv('RE_DEFAULT_FOLDER_TEST')):
+                                output_dir=config.output_folder):
     """
-    Processes an image gallery HTML snippet to extract and optionally download images.
+    Processes all image gallery HTML snippets in the folder to extract and optionally download images.
     
     Args:
         scrapes_dir (str): The folder with HTML scrapes of the image galleries.
@@ -119,25 +138,29 @@ def process_image_gallery_files(scrapes_dir=os.getenv('RE_DEFAULT_FOLDER_IMAGE_S
     if not os.path.exists(scrapes_dir):
         print(f"Scrapes directory does not exist: {scrapes_dir}")
         return None
+    
     html_files = [filepath for filepath in os.listdir(scrapes_dir)]
-    for html_content in html_files:
-        with open(os.path.join(scrapes_dir, html_content), 'r') as file:
+    for filename in html_files:
+        with open(os.path.join(scrapes_dir, filename), 'r') as file:
             html_content = file.read()
-            image_urls = extract_images_from_gallery(html_content)
-    
-    if download and output_dir:
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
+            image_urls = extract_images_from_gallery(html_content)  
+            address_filename = extract_address_from_html(html_content)
+
+        if download and output_dir:
+            images_folder = os.path.join(output_dir, address_filename if address_filename else "unknown_property")
+            if not os.path.exists(images_folder):
+                os.makedirs(images_folder)
+            
+            for idx, url in enumerate(image_urls):
+                file_extension = os.path.splitext(url)[1]
+                save_path = os.path.join(images_folder, f"image_{idx + 1}{file_extension}")
+                download_image(url, save_path)
+                print(f"Downloaded image to: {save_path}")
         
-        for idx, url in enumerate(image_urls):
-            file_extension = os.path.splitext(url)[1]
-            save_path = os.path.join(output_dir, f"image_{idx + 1}{file_extension}")
-            download_image(url, save_path)
-            print(f"Downloaded image to: {save_path}")
-    
-    print(f"Extracted Image URLs: {image_urls}")
+            print(f"Extracted Image URLs: {image_urls}")
+
     return image_urls if image_urls else None
-    
+
 
 # --- Example Usage ---
 if __name__ == "__main__":
