@@ -1,0 +1,14 @@
+{
+  "environment": {
+    "prefix": "RE",
+  "default_folder": {
+    "page_scrapes": "real_estate/page_scrapes",
+    "image_scrapes": "real_estate/page_scrapes/images",
+    "logs": "real_estate_logs",
+    "output": "real_estate/output",
+    "data": "real_estate/data",
+    "test": "real_estate/test",
+    "temp": "real_estate/temp"
+    }
+  }
+}
