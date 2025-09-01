@@ -109,8 +109,8 @@ def extract_images_from_gallery(html_content):
             if largest_url:
                 largest_urls.append(largest_url)
 
-    # Print the extracted URLs
-    print(largest_urls)
+    # # Print the extracted URLs
+    # print(largest_urls)
     return largest_urls
 
 def download_image(image_url, save_path):
@@ -143,6 +143,8 @@ def process_image_gallery_files(scrapes_dir=config.scrapes_dir,
         download (bool): Whether to download the images.
         output_dir (str): The directory to save downloaded images if download is True.
     """
+    addresses_processed = set() # To track processed addresses and avoid duplicates
+
     if not os.path.exists(scrapes_dir):
         print(f"Scrapes directory does not exist: {scrapes_dir}")
         return None
@@ -153,6 +155,7 @@ def process_image_gallery_files(scrapes_dir=config.scrapes_dir,
             html_content = file.read()
             image_urls = extract_images_from_gallery(html_content)  
             address_filename = extract_address_from_html(html_content)
+            addresses_processed.add(address_filename if address_filename else "unknown_property")
 
         if download and output_dir:
             images_folder = os.path.join(output_dir, address_filename if address_filename else "unknown_property")
@@ -165,9 +168,10 @@ def process_image_gallery_files(scrapes_dir=config.scrapes_dir,
                 download_image(url, save_path)
                 print(f"Downloaded image to: {save_path}")
         
-            print(f"Extracted Image URLs: {image_urls}")
+        print(f"Extracted Image URLs: \n{'\n'.join(image_urls)}\n")
 
-    return image_urls if image_urls else None
+    print("Processing completed.")
+    return list(addresses_processed)
 
 
 # --- Example Usage ---
@@ -180,6 +184,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    img_urls = process_image_gallery_files(args.scraped_files_dir, args.download, args.output)
-    print(f"process_image_gallery_files returned: {img_urls}")
-    
+    addresses_processed = process_image_gallery_files(args.scraped_files_dir, args.download, args.output)
+    print (f"images downloaded: {args.download}")
+    print(f"process_image_gallery_files processed: \n{'\n'.join(addresses_processed)}")
+
