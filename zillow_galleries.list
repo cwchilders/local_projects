@@ -1,0 +1,147 @@
+Populating environment variables from JSON...
+Set environment variable: RE_DEFAULT_FOLDER_PAGE_SCRAPES = 'real_estate/page_scrapes'
+Set environment variable: RE_DEFAULT_FOLDER_IMAGE_SCRAPES = 'real_estate/page_scrapes/images'
+Set environment variable: RE_DEFAULT_FOLDER_LOGS = 'real_estate_logs'
+Set environment variable: RE_DEFAULT_FOLDER_OUTPUT = 'real_estate/output'
+Set environment variable: RE_DEFAULT_FOLDER_DATA = 'real_estate/data'
+Set environment variable: RE_DEFAULT_FOLDER_TEST = 'real_estate/test'
+Set environment variable: RE_DEFAULT_FOLDER_TEMP = 'real_estate/temp'
+
+Successfully set all environment variables and the flag: RE_CONFIG_LOADED
+1116_Witt_Rd_taos__NM_87571
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/4f76607af01d8241ab35df850f790e83-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/50a3cd691275ddbb4f63ffb4b00f3ec9-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/c7b77643636632bfc66209adf1c7327b-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/238690149bbea1339e7d39821bcba9d1-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/999eaea807ef2a2ce01b1163c0d3cd45-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/7c4164cf6ce3b9d8bc5f6f0c32a7f217-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/62abb85013b70d4f5d642187e95424f6-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/ab8b75dc7157d9cb5222cda1344c7d4d-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/79f3a4e22033f39bf8926dab3225ed05-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/773b036bfb7eab542bb5e2652274bce4-cc_ft_1536.jpg
+
+10_Coca_Rd_ranchos_de_taos__NM_87557
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/6fae2292780e4314a0d63af95ffcf0ea-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/9ff846893e6988edb6d48e320c8ea30d-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/9731f0615037c648d148c2297df5208a-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/4eef0bc48e861bfb860e67d80fba5ca7-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/a226923629663bf71a5bb14bb0b7efab-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/3d5dfa3c1707dafec4a36c3288fccf62-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/ecf4345d0be6b59efdad1c18f3b54354-cc_ft_1536.jpg
+
+(Undisclosed_Address)_tierra_amarilla__NM_87575
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/10ec0d631ef75e2699e8ff3017a9375d-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/645e4a6c7be772b4fa97f06ee9a8bc0f-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/6e716fc7a4b27daf0ac1f9007ebdbac6-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/875dd1941a632a5e29d1767d0ea9e4c4-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/7813b1689bffda0187135b3cf8a5eae4-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/b566419f6482c29928bb10e72f442e45-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/57ad1b6a87abb9de532fe189c97db9ec-cc_ft_1536.jpg
+
+318_State_Highway_230_valdez__NM_87580
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/92e8deb94795ad5a471fcc83d8c29f8e-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/48d3ca7f9223fd46021b506ce759e252-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/09156b98b2f9674d800d67bd762b7768-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/700c3c5c1cd209cc694b6e39a109dea3-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/a7ed74759715e5131f4468c34c3bf1bd-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/34bdb2f889d979d25b1d4f5fa7853015-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/82b2f3df44085bd1cee9afdc2d4e6ec6-cc_ft_1536.jpg
+
+18_Private_Drive_1711_tierra_amarilla__NM_87575
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/de561043af4e7ab6d683754565c579a5-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/f1a23687d2c2fe786419e033525a1fd8-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/f5c88485668e6f58a1b5da502468da8a-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/5b3f513418715a28cf74f3b7aeae82fe-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/5d68a68d21d30db41671ed462bf90abb-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/2b5faad16eeb29b2d9c90fe4bade507a-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/c098cdf1460d355970bb3f83e89887f0-cc_ft_1536.jpg
+
+30_Dulcimer_Rd_questa__NM_87556
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/0d1df3bb123bc1a7a28e10b9a84e6e28-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/c43f3f436aba70ce39a6917a30bdf71b-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/f313e8ae3bf88af321a91e867652bb49-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/e8241f63dd4f5919a1e701748646e295-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/bea0448ed9960cbfce885aeed45d065b-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/e8bedcb98e852941e74b56fc972f826c-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/a9e8c46c4bbdf8347d92d5ac926d3da4-cc_ft_1536.jpg
+
+38_State_Road_576_vallecitos__NM_87581
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/ca42a07980d57ff6743c010f3c564ce2-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/d706b49a9de436370cd346293bc6ef7f-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/e869439d9123c6a8ea590ab6e4031398-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/dab1b3f8c57bcea1bf9d46019ee95491-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/0c832493a94b936eea97e335d09d4863-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/04810984768709225c6a30eed94c87ee-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/60dec834987e870adc99979c828912a1-cc_ft_1536.jpg
+
+2905_Calle_De_Oriente_santa_fe__NM_87507
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/f660d07f11e08fd959fc3f4604baefe8-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/a01bd12be82247fda337fabb341ebf43-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/2eebfbcbd69744aa850c93fbee5c175a-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/23d8853dcc84733f9aaa727945164839-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/934faebe5165da25a816d9a137f9019b-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/66f4c1aa99f3fca44a90f4f2133bde6e-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/c9d64cf2136ec79a2f7f802ceffa9ed6-cc_ft_1536.jpg
+
+1186_Highway_554_el_rito__NM_87530
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/0e0f0541a3a56133807f2d09999fefd3-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/a33ace6b524f98d06b497942a1980b80-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/1fd8a47cec7f8607e26616f78eaee826-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/e95e467b6aa1b9b332a2b460783c2fc5-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/c40792c40558cb3e98398ff2d1e478ff-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/97640b95733d3c16d79e7fe9b3e6725e-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/9d5acede4832b5de20b8b31e30ec1ce2-cc_ft_1536.jpg
+
+1414_Montana_Vista_St_espanola__NM_87532
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/e672421c8d440dc152abcc1b8b08b934-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/74b19cd527c7f30308f0c8ab13223aaa-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/bf59c311fe79366038bf6fdf2d3d8929-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/b34048793792fc0790c070d4b960e064-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/e4b67e8a66a1e546c74abf88dc11d0bd-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/d89aecedc7dad42e3e53e9329e872074-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/62227a3590559cc558dfe710b2c176bc-cc_ft_1536.jpg
+
+26_Road_2892_aztec__NM_87410
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/26826c3255a8bdc54b90f410bc5a3a9c-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/ec9c3fbbffb497170ccfa429a278ce90-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/1354a1d889c01ccaf8e18fdd2f46aeb3-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/805319c83d7ab741ac88d7e915fb64fe-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/5c332e16619b52608ababa2637f62e2c-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/96bdf1feb31c021ce149be0b01b46cf6-cc_ft_1536.jpg
+
+548_Camino_Del_Medio_taos__NM_87571
+Extracted Image URLs: 
+https://photos.zillowstatic.com/fp/367f0f093a42403a19bb1599c0fe5ad4-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/8737e31e80db19859536aee7962bf967-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/f21a24fe7342317e6911ced14d5fb7fe-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/7b27aea8d56aa3839eda44d0a33489c3-cc_ft_1536.jpg
+https://photos.zillowstatic.com/fp/7369d91abea9ae901a2bf969dbb09bce-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/4e61a8ddd320086bfb8f82969b8e2dbc-cc_ft_768.jpg
+https://photos.zillowstatic.com/fp/b791959a85938ceb57d0c1db5fc60f62-cc_ft_1536.jpg
+
+Processing completed.
+images downloaded: False
+process_image_gallery_files processed: 
+1186_Highway_554_el_rito__NM_87530
+548_Camino_Del_Medio_taos__NM_87571
+10_Coca_Rd_ranchos_de_taos__NM_87557
+1414_Montana_Vista_St_espanola__NM_87532
+318_State_Highway_230_valdez__NM_87580
+38_State_Road_576_vallecitos__NM_87581
+1116_Witt_Rd_taos__NM_87571
+2905_Calle_De_Oriente_santa_fe__NM_87507
+30_Dulcimer_Rd_questa__NM_87556
+18_Private_Drive_1711_tierra_amarilla__NM_87575
+(Undisclosed_Address)_tierra_amarilla__NM_87575
+26_Road_2892_aztec__NM_87410
