@@ -60,29 +60,76 @@ def parse_zillow_stats(html_content):
     
     return stats
 
-# # --- Example Usage ---
-# html_snippet = """
-# <dl class="styles__StyledOverviewStats-fshdp-8-111-1__sc-1x11gd9-0 kpgmGL">
-# 	<dt><strong>204 days</strong></dt>
-# 	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp">on Zillow</dt>
-# 	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
-# 	<dt><strong>1,188</strong></dt>
-# 	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp"><button type="button" aria-expanded="false" aria-haspopup="false" class="TriggerText-c11n-8-111-1__sc-d96jze-0 hAKmPK TooltipPopper-c11n-8-111-1__sc-1v2hxhd-0 isapNu">views</button></dt>
-# 	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
-# 	<dt><strong>61</strong></dt>
-# 	<dt class="styles__StyledOverviewStatsLabel-fshdp-8-111-1__sc-17pxa3r-0 iwFocp"><button type="button" aria-expanded="false" aria-haspopup="false" class="TriggerText-c11n-8-111-1__sc-d96jze-0 hAKmPK TooltipPopper-c11n-8-111-1__sc-1v2hxhd-0 isapNu">saves</button></dt>
-# 	<span class="styles__StyledOverviewStatsDivider-fshdp-8-111-1__sc-1x11gd9-1 iOpxAQ">|</span>
-# </dl>
-# """
 
-# zillow_stats = parse_zillow_stats(html_snippet)
+def parse_zillow_details(html_content):
+    """
+    Extracts home details from the provided HTML content.
 
-# if zillow_stats:
-#     print(f"Days on Zillow: {zillow_stats['days_on_zillow']}")
-#     print(f"Views: {zillow_stats['views']}")
-#     print(f"Saves: {zillow_stats['saves']}")
-# else:
-#     print("Could not parse Zillow stats from the HTML.")
+    Args:
+        html_content: A string containing the HTML.
+
+    Returns:
+        A dictionary containing the price, address, beds, baths, and sqft,
+        or None if the main container is not found.
+    """
+    soup = BeautifulSoup(html_content, 'lxml')
+    details_container = soup.find('div', attrs={'data-testid': 'home-details-chip-container'})
+
+    if not details_container:
+        return None
+
+    price_span = details_container.find('span', attrs={'data-testid': 'price'})
+    price = price_span.get_text(strip=True) if price_span else None
+
+    address_h1 = details_container.find('h1')
+    address = address_h1.get_text(strip=True) if address_h1 else None
+
+    facts_container = details_container.find('div', attrs={'data-testid': 'bed-bath-sqft-facts'})
+    beds = None
+    baths = None
+    sqft = None
+
+    if facts_container:
+        # This is a more robust way to get all the facts, regardless of order
+        for fact in facts_container.find_all(attrs={'data-testid': 'bed-bath-sqft-fact-container'}):
+            value = fact.find('span', class_=[ '--medium']).get_text(strip=True)
+            description = fact.find('span', class_=[ 'koMNUa']).get_text(strip=True) # This class seems to be for the description text
+            if 'bed' in description:
+                beds = value
+            elif 'bath' in description:
+                baths = value
+            elif 'sqft' in description:
+                sqft = value
+
+
+    return {
+        'price': price,
+        'address': address,
+        'beds': beds,
+        'baths': baths,
+        'sqft': sqft
+    }
+
+
+def parse_zillow_description(html_content):
+    """
+    Extracts the description text from the provided HTML content.
+
+    Args:
+        html_content: A string containing the HTML.
+
+    Returns:
+        The description text as a string, or None if not found.
+    """
+    soup = BeautifulSoup(html_content, 'lxml')
+    description_div = soup.find('div', attrs={'data-testid': 'description'})
+    if description_div:
+        # Find the specific div with the text, excluding the button text
+        text_div = description_div.find('div', class_='Text-c11n-8-111-1__sc-aiai24-0')
+        if text_div:
+            return text_div.get_text(strip=True)
+    return None
+
 
 
 def parse_zillow_facts(html_content):
@@ -98,7 +145,7 @@ def parse_zillow_facts(html_content):
     soup = BeautifulSoup(html_content, 'lxml')
 
     data = {}
-    for category_group in soup.find_all('div', {'data-testid': 'category-group'}):
+    for category_group in soup.find_all('div', {'data-testid': 'facts-and-features-module'}):
         group_title = category_group.find('h3', class_=lambda x: x and 'StyledCategoryGroupHeading' in x).get_text(strip=True)
         data[group_title] = {}
         for fact_category in category_group.find_all('div', {'data-testid': 'fact-category'}):
@@ -108,6 +155,7 @@ def parse_zillow_facts(html_content):
 
     # print(data)
     return data
+
 
 def format_zillow_data(zillow_data):
     """
@@ -273,6 +321,8 @@ def format_scrape(scrapes_folder_path = default_scrapes_path, output_folder_path
                 # Read the entire content of the file into a single string
                 content = f.read()
             stats = parse_zillow_stats(content)
+            details = parse_zillow_details(content)
+            description = parse_zillow_description(content)
             facts = parse_zillow_facts(content)
             listing_data = extract_mls_data(content)
             name = property_address_from_filename(file_path.name)
@@ -322,6 +372,19 @@ def format_scrape(scrapes_folder_path = default_scrapes_path, output_folder_path
                 file_lines.append(f"No MLS data retrieved for {name}.")
 
             print("\n---\n")
+
+            if description:
+                print("## Description:")
+                file_lines.append("## Description:")
+                print(description)
+                file_lines.append(description)
+
+            if details:
+                print("## Home Details:")
+                file_lines.append("## Home Details:")
+                for key, value in details.items():
+                    print(f"  - {key.capitalize()}: {value}")
+                    file_lines.append(f"  - {key.capitalize()}: {value}")
 
             if facts:
                 formatted_description = format_zillow_data(facts)
