@@ -110,6 +110,18 @@ def parse_zillow_details(html_content):
         'sqft': sqft
     }
 
+def format_details(data):
+  price = f"**{data.get('price', 'N/A')}**"
+  other_data = []
+  for key, value in data.items():
+    if key not in ['price', 'address']:
+      if key == 'beds' and value == '1':
+        key = 'bed'
+      elif key == 'baths' and value == '1':
+        key = 'bath'
+      other_data.append(f"{value} {key}")
+  return f"{price} {' '.join(other_data)}"
+
 
 def parse_zillow_description(html_content):
     """
@@ -347,7 +359,13 @@ def format_scrape(scrapes_folder_path = default_scrapes_path, output_folder_path
             # Get the MLS ID from the listing_data
             id = listing_data.get('MLS#', 'N/A')
             print(f"### MLS Property ID: {id}")
-            file_lines.append(f"## MLS Property ID: {id}")
+            file_lines.append(f"### MLS Property ID: {id}")
+
+            if details:
+                formatted_details = format_details(details)
+                print(f"## {formatted_details}")
+                file_lines.append(f"## {formatted_details}")
+
 
             print("\n---\n -- Stats --")
 
@@ -379,13 +397,6 @@ def format_scrape(scrapes_folder_path = default_scrapes_path, output_folder_path
                 print(description)
                 file_lines.append(description)
 
-            if details:
-                print("## Home Details:")
-                file_lines.append("## Home Details:")
-                for key, value in details.items():
-                    print(f"  - {key.capitalize()}: {value}")
-                    file_lines.append(f"  - {key.capitalize()}: {value}")
-
             if facts:
                 formatted_description = format_zillow_data(facts)
                 print("## Facts:")
@@ -410,7 +421,7 @@ def format_scrape(scrapes_folder_path = default_scrapes_path, output_folder_path
             # Catch encoding errors if the file isn't UTF-8
             print(f"Encoding error with file {file_path}: {e}")
 
-    
+
 
 def main():
 
