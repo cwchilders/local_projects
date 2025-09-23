@@ -58,3 +58,4 @@ test/
 config/API_KEYS.json
 
 youtube_api/playlists/client_secret_782450181754-8tarmea4lrhit1en2gmvhoe9b37jd7d7.apps.googleusercontent.com.json
+youtube_api/playlists/token.json
