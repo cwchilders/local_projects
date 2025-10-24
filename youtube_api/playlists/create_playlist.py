@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 YouTube Playlist Creator
-Version: 2.0.0
+Version: 2.1.0
 Date: 2024-09-23
 
 Reads song titles from song_list.txt and searches YouTube for each song,
@@ -19,6 +19,7 @@ Requirements:
 - google-auth-httplib2
 
 Changelog:
+v2.1.0 - Added retry logic for YouTube API temporary errors (409, 503)
 v2.0.0 - Added playlist metadata parsing and actual playlist creation
 v1.0.0 - Initial version with search functionality
 """
@@ -26,8 +27,10 @@ v1.0.0 - Initial version with search functionality
 import os
 import json
 import re
+import time
 from typing import List, Dict, Optional
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -248,35 +251,57 @@ class YouTubePlaylistCreator:
                 print(f"❌ Error creating playlist: {e}")
             return None
 
-    def add_video_to_playlist(self, playlist_id: str, video_id: str) -> bool:
+    def add_video_to_playlist(self, playlist_id: str, video_id: str, max_retries: int = 3) -> bool:
         """
-        Add a video to a YouTube playlist
+        Add a video to a YouTube playlist with retry logic
 
         Args:
             playlist_id: ID of the playlist
             video_id: ID of the video to add
+            max_retries: Maximum number of retry attempts
 
         Returns:
             True if successful, False otherwise
         """
-        try:
-            self.youtube.playlistItems().insert(
-                part='snippet',
-                body={
-                    'snippet': {
-                        'playlistId': playlist_id,
-                        'resourceId': {
-                            'kind': 'youtube#video',
-                            'videoId': video_id
+        for attempt in range(max_retries + 1):
+            try:
+                self.youtube.playlistItems().insert(
+                    part='snippet',
+                    body={
+                        'snippet': {
+                            'playlistId': playlist_id,
+                            'resourceId': {
+                                'kind': 'youtube#video',
+                                'videoId': video_id
+                            }
                         }
                     }
-                }
-            ).execute()
-            return True
+                ).execute()
+                return True
 
-        except Exception as e:
-            print(f"❌ Error adding video {video_id} to playlist: {e}")
-            return False
+            except HttpError as e:
+                error_code = e.resp.status
+                error_reason = e.error_details[0].get('reason', '') if e.error_details else ''
+
+                # Retry on temporary errors
+                if error_code in [409, 503] or 'SERVICE_UNAVAILABLE' in str(e):
+                    if attempt < max_retries:
+                        wait_time = (2 ** attempt)  # Exponential backoff: 1s, 2s, 4s
+                        print(f"   ⏳ Temporary error ({error_code}), retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
+                        time.sleep(wait_time)
+                        continue
+                    else:
+                        print(f"❌ Failed after {max_retries} retries. Error adding video {video_id}: {e}")
+                        return False
+                else:
+                    print(f"❌ Error adding video {video_id} to playlist: {e}")
+                    return False
+
+            except Exception as e:
+                print(f"❌ Unexpected error adding video {video_id} to playlist: {e}")
+                return False
+
+        return False
 
     def process_songs(self, song_list_file: str, output_file: str = 'search_results.json', create_playlist: bool = True):
         """
